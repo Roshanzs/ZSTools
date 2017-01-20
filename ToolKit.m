@@ -238,39 +238,7 @@ const char * getPropertyType(objc_property_t property)
     return rect.size.width;
 }
 
-// 检测网络
-static BOOL ischecked = NO;
-+ (AFNetworkReachabilityStatus)checkNetwork
-{
-    __block AFNetworkReachabilityStatus statusInNet = AFNetworkReachabilityStatusUnknown;
-    if (ischecked == NO)
-    {
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            ischecked = YES;
-        });
-        dispatch_group_t group = dispatch_group_create();
-        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-        dispatch_group_async(group, queue, ^{
-            
-            /**
-             AFNetworkReachabilityStatusUnknown          = -1,  // 未知
-             AFNetworkReachabilityStatusNotReachable     = 0,   // 无连接
-             AFNetworkReachabilityStatusReachableViaWWAN = 1,   // 3G 花钱
-             AFNetworkReachabilityStatusReachableViaWiFi = 2,   // 局域网络,不花钱
-             */
-            dispatch_semaphore_t sema = dispatch_semaphore_create(0);
-            [[AFNetworkReachabilityManager sharedManager] startMonitoring];
-            [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
-                statusInNet = status;
-                
-                dispatch_semaphore_signal(sema);
-            }];
-            dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-        });
-    }
-    return statusInNet;
-}
+
 // 检测网络
 static BOOL ischeckedSuccess = NO;
 + (void)checkNetworkStatue:(void(^)(AFNetworkReachabilityStatus statue))block
@@ -289,7 +257,7 @@ static BOOL ischeckedSuccess = NO;
             /**
              AFNetworkReachabilityStatusUnknown          = -1,  // 未知
              AFNetworkReachabilityStatusNotReachable     = 0,   // 无连接
-             AFNetworkReachabilityStatusReachableViaWWAN = 1,   // 3G 花钱
+             AFNetworkReachabilityStatusReachableViaWWAN = 1,   // 3G/4G 花钱
              AFNetworkReachabilityStatusReachableViaWiFi = 2,   // 局域网络,不花钱
              */
             dispatch_semaphore_t sema = dispatch_semaphore_create(0);
@@ -439,6 +407,20 @@ static BOOL ischeckedSuccess = NO;
     [dateFormatter setDateFormat:@"yyyy:MM月:dd"];
     NSString *dateString = [dateFormatter stringFromDate:date2];
     return dateString;
+}
+
++(UITextField *)ZStextfiled:(UITextField *)textfiled ReturnViewWithWidth:(CGFloat)Width{
+    UILabel *lab = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, Width, 0)];
+    textfiled.leftView = lab;
+    textfiled.leftViewMode = UITextFieldViewModeAlways;
+    return textfiled;
+}
+
+//切割圆角
++(UIView *)ZScorner:(UIView *)obj WithFlote:(CGFloat)Radius{
+    obj.layer.cornerRadius = Radius;
+    obj.layer.masksToBounds = YES;
+    return nil;
 }
 
 @end

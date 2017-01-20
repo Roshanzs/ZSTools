@@ -185,9 +185,9 @@ const char * getPropertyType(objc_property_t property);
 /**
  *  判断网络
  *
- *  @return ~
+ *  block 返回信号类型
  */
-+ (AFNetworkReachabilityStatus)checkNetwork;
++ (void)checkNetworkStatue:(void(^)(AFNetworkReachabilityStatus statue))block;
 /**
  *  获得设备机型
  *
@@ -200,11 +200,22 @@ const char * getPropertyType(objc_property_t property);
  *  @return BOOL
  */
 + (BOOL)checkDeviceSupportECar;
+
+
 + (NSString *)nullString:(NSString *)str;
-+ (void)checkNetworkStatue:(void(^)(AFNetworkReachabilityStatus statue))block;
 
 // 时间戳转化为时间
 + (NSString *)creatTimeFromDate:(NSNumber *)date;
+
+
+//textfiled前的空白
++(UITextField *)ZStextfiled:(UITextField *)textfiled ReturnViewWithWidth:(CGFloat)Width;
+
+//切割圆角
++(UIView *)ZScorner:(UIView *)obj WithFlote:(CGFloat)Radius;
+
+
+
 
 #pragma mark - 检测相关
 
