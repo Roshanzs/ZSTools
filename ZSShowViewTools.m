@@ -28,24 +28,27 @@ typedef enum{
         instance = [[ZSShowViewTools alloc] init];
     });
     return instance;
-    
 }
 
-+(void)showMessage:(NSString *)msg WithMode:(StatusMode)mode{
++(void)showMessage:(NSString *)msg WithMode:(StatusMode)mode withView:(UIView *)Cview{
     UIWindow *view = [[UIApplication sharedApplication].windows lastObject];
     if ([ZSShowViewTools share].mbp != nil) {
         [[ZSShowViewTools share].mbp hideAnimated:YES];
         [ZSShowViewTools share].mbp = nil;
     }
-    [ZSShowViewTools share].mbp = [MBProgressHUD showHUDAddedTo:view animated:YES];
-    [ZSShowViewTools share].mbp.bezelView.color = [UIColor whiteColor];
-    [ZSShowViewTools share].mbp.bezelView.alpha = 0.6;
-    [ZSShowViewTools share].mbp.contentColor = [UIColor blackColor];
+    if (Cview == nil) {
+        [ZSShowViewTools share].mbp = [MBProgressHUD showHUDAddedTo:view animated:YES];
+    }else{
+        [ZSShowViewTools share].mbp = [MBProgressHUD showHUDAddedTo:Cview animated:YES];
+    }
+    [ZSShowViewTools share].mbp.bezelView.color = [UIColor grayColor];
+    [ZSShowViewTools share].mbp.bezelView.alpha = 0.8;
+    [ZSShowViewTools share].mbp.contentColor = [UIColor whiteColor];
     [[ZSShowViewTools share].mbp setMargin:30];
     [ZSShowViewTools share].mbp.label.numberOfLines = 0;
     [[ZSShowViewTools share].mbp setRemoveFromSuperViewOnHide:YES];
     [ZSShowViewTools share].mbp.detailsLabel.text = msg;
-    [ZSShowViewTools share].mbp.detailsLabel.font = [UIFont systemFontOfSize:14];
+    [ZSShowViewTools share].mbp.detailsLabel.font = [UIFont systemFontOfSize:14.0/667.0*HSCREEN];
     
     switch ((NSInteger)mode) {
         case ZSMBProgressHUDOnlyText:
@@ -73,21 +76,26 @@ typedef enum{
 
 
 +(void)showMessage:(NSString *)msg{
-    [self showMessage:msg WithMode:ZSMBProgressHUDOnlyText];
+    [self showMessage:msg WithMode:ZSMBProgressHUDOnlyText withView:nil];
     [[ZSShowViewTools share].mbp hideAnimated:YES afterDelay:1.0];
 }
 
 +(void)showMessage:(NSString *)msg WithAfterDelay:(NSTimeInterval)delay{
-    [self showMessage:msg WithMode:ZSMBProgressHUDOnlyText];
+    [self showMessage:msg WithMode:ZSMBProgressHUDOnlyText withView:nil];
     [[ZSShowViewTools share].mbp hideAnimated:YES afterDelay:delay];
 }
 
 +(void)showProgress:(NSString *)msg{
-    [self showMessage:msg WithMode:ZSMBProgressHUDOnlyLoading];
+    [self showMessage:msg WithMode:ZSMBProgressHUDOnlyLoading withView:nil];
 }
 
++(void)showProgress:(NSString *)msg withView:(UIView *)Cview{
+    [self showMessage:msg WithMode:ZSMBProgressHUDOnlyLoading withView:Cview];
+}
+
+
 +(void)showSuccess:(NSString *)msg{
-    [self showMessage:msg WithMode:ZSMBProgressHUDOnlySuccess];
+    [self showMessage:msg WithMode:ZSMBProgressHUDOnlySuccess withView:nil];
     [[ZSShowViewTools share].mbp hideAnimated:YES afterDelay:1.0];
 }
 
@@ -126,6 +134,19 @@ typedef enum{
     }];
 }
 
++(void)ZSAlartWithOneBtnTitle:(NSString *)title Message:(NSString *)message{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"确认" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+    }];
+    [alert addAction:action];
+    
+    //获取到窗口最上层的viewcontroller
+    UIWindow *view = [[UIApplication sharedApplication].windows lastObject];
+    [view.rootViewController presentViewController:alert animated:YES completion:^{
+    }];
+}
+
+
 //底部一个按钮
 +(void)ZSAlartWithOneSheetBtnTitle:(NSString *)title Message:(NSString *)message BtnStr:(NSString *)Btnstr WithCancelBtn:(BOOL)cancelbtn ClickBlock:(void(^)())btnClickBlock{
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleActionSheet];
@@ -144,6 +165,29 @@ typedef enum{
     UIWindow *view = [[UIApplication sharedApplication].windows lastObject];
     [view.rootViewController presentViewController:alert animated:YES completion:^{
     }];
-
 }
+
+//中间弹框修改框
++(void)ZSAlartWithBoxBtnTitle:(NSString *)title Message:(NSString *)message BtnStr:(NSString *)Btnstr WithCancelBtn:(BOOL)cancelbtn ClickBlock:(void(^)(NSString * str))btnClickBlock{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = [NSString stringWithFormat:@"请输入新的%@",title];
+    }];
+    UIAlertAction *action = [UIAlertAction actionWithTitle:Btnstr style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        btnClickBlock(alert.textFields.firstObject.text);
+    }];
+    [alert addAction:action];
+    
+    if (cancelbtn) {
+        UIAlertAction *Cancelaction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        }];
+        [alert addAction:Cancelaction];
+    }
+    
+    //获取到窗口最上层的viewcontroller
+    UIWindow *view = [[UIApplication sharedApplication].windows lastObject];
+    [view.rootViewController presentViewController:alert animated:YES completion:^{
+    }];
+}
+
 @end

@@ -55,9 +55,8 @@
  *  拨打电话
  *
  *  @param num  电话号码
- *  @param view Controller的view
  */
-+ (void)callTelephoneNumber:(NSString *)num addView:(UIView *)view;
++ (void)callTelephoneNumber:(NSString *)num;
 
 #pragma mark - 类属性相关
 /**
@@ -214,9 +213,14 @@ const char * getPropertyType(objc_property_t property);
 //切割圆角
 +(UIView *)ZScorner:(UIView *)obj WithFlote:(CGFloat)Radius;
 
+// NSData 转 NSDictionary
++(NSDictionary*) nsDataToNSDictionary:(NSData*)plistData;
 
+// 查找并截取字符串
++(NSString*) findSubStringStr:(NSString*)sFull Leftstr:(NSString*)sLeft Rightstr:(NSString*)sRight;
 
-
+//修改图片大小
++ (UIImage *)image:(UIImage*)image byScalingToSize:(CGFloat)targetfloat ;
 #pragma mark - 检测相关
 
 @end

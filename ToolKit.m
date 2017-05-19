@@ -44,7 +44,7 @@
 }
 
 #pragma mark - 打电话
-+ (void)callTelephoneNumber:(NSString *)num addView:(UIView *)view
++ (void)callTelephoneNumber:(NSString *)num
 {
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"tel://400-6507265"]];
 }
@@ -409,6 +409,7 @@ static BOOL ischeckedSuccess = NO;
     return dateString;
 }
 
+//textfiled前的空白
 +(UITextField *)ZStextfiled:(UITextField *)textfiled ReturnViewWithWidth:(CGFloat)Width{
     UILabel *lab = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, Width, 0)];
     textfiled.leftView = lab;
@@ -422,5 +423,48 @@ static BOOL ischeckedSuccess = NO;
     obj.layer.masksToBounds = YES;
     return nil;
 }
+
+// NSData 转 NSDictionary
+
++(NSDictionary*) nsDataToNSDictionary:(NSData*)plistData
+{
+    NSError  *error;
+    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:plistData options:NSJSONReadingMutableLeaves error:&error];
+    
+    return dic;
+}
+
+// 查找并截取字符串
++(NSString*) findSubStringStr:(NSString*)sFull Leftstr:(NSString*)sLeft Rightstr:(NSString*)sRight
+{
+    NSRange startrange = [sFull rangeOfString:sLeft];
+    NSRange endrange = [sFull rangeOfString:sRight];
+    NSRange range = NSMakeRange(startrange.location + startrange.length, endrange.location - startrange.location - startrange.length);
+    NSString *resultstr = [sFull substringWithRange:range];
+    return resultstr;
+}
+
+
+//修改照片的大小
++ (UIImage *)image:(UIImage*)image byScalingToSize:(CGFloat)targetfloat {
+    UIImage *sourceImage = image;
+    UIImage *newImage = nil;
+    CGSize size = CGSizeZero;
+    size.height = sourceImage.size.height * targetfloat;
+    size.width = sourceImage.size.width * targetfloat;
+    UIGraphicsBeginImageContext(size);
+    
+    CGRect thumbnailRect = CGRectZero;
+    thumbnailRect.origin = CGPointZero;
+    thumbnailRect.size  = size;
+    
+    [sourceImage drawInRect:thumbnailRect];
+    
+    newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return newImage ;
+}
+
 
 @end
