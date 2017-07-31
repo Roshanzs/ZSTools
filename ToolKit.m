@@ -1,5 +1,5 @@
 //
-//  CommonTool.m
+//  ToolKit.m
 //  AlgorithmDemo
 //
 //  Created by Tony on 15/7/24.

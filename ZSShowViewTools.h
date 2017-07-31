@@ -1,5 +1,5 @@
 //
-//  ZSMBProgressHUD.h
+//  ZSShowViewTools.h
 //  Enjoy-Booking
 //
 //  Created by 紫贝壳 on 2017/1/6.
@@ -33,6 +33,7 @@
 //UIAlretController
 //中间一个按钮
 +(void)ZSAlartWithOneBtnTitle:(NSString *)title Message:(NSString *)message BtnStr:(NSString *)Btnstr WithCancelBtn:(BOOL)cancelbtn ClickBlock:(void(^)())btnClickBlock;
++(UIAlertController *)ZSAlartDelayWithOneBtnTitle:(NSString *)title Message:(NSString *)message BtnStr:(NSString *)Btnstr WithCancelBtn:(BOOL)cancelbtn ClickBlock:(void(^)())btnClickBlock;
 //中间只有一个取消按钮的提示信息
 +(void)ZSAlartWithOneBtnTitle:(NSString *)title Message:(NSString *)message;
 //底部一个按钮

@@ -1,5 +1,5 @@
 //
-//  CommonTool.h
+//  ToolKit.h
 //  AlgorithmDemo
 //
 //  Created by Tony on 15/7/24.

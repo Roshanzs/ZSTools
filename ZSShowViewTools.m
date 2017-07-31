@@ -1,5 +1,5 @@
 //
-//  ZSMBProgressHUD.m
+//  ZSShowViewTools.m
 //  Enjoy-Booking
 //
 //  Created by 紫贝壳 on 2017/1/6.
@@ -19,6 +19,7 @@ typedef enum{
 @property(nonatomic,strong)MBProgressHUD *mbp;
 @end
 
+#define HSCREEN [UIScreen mainScreen].bounds.size.height
 @implementation ZSShowViewTools
 
 +(instancetype)share{
@@ -31,7 +32,9 @@ typedef enum{
 }
 
 +(void)showMessage:(NSString *)msg WithMode:(StatusMode)mode withView:(UIView *)Cview{
-    UIWindow *view = [[UIApplication sharedApplication].windows lastObject];
+    
+    UIWindow *view = [self lastWindow];
+    
     if ([ZSShowViewTools share].mbp != nil) {
         [[ZSShowViewTools share].mbp hideAnimated:YES];
         [ZSShowViewTools share].mbp = nil;
@@ -49,7 +52,6 @@ typedef enum{
     [[ZSShowViewTools share].mbp setRemoveFromSuperViewOnHide:YES];
     [ZSShowViewTools share].mbp.detailsLabel.text = msg;
     [ZSShowViewTools share].mbp.detailsLabel.font = [UIFont systemFontOfSize:14.0/667.0*HSCREEN];
-    
     switch ((NSInteger)mode) {
         case ZSMBProgressHUDOnlyText:
             [ZSShowViewTools share].mbp.mode = MBProgressHUDModeText;
@@ -71,7 +73,6 @@ typedef enum{
         default:
             break;
     }
-    
 }
 
 
@@ -129,10 +130,48 @@ typedef enum{
         [alert addAction:Cancelaction];
     }
     //获取到窗口最上层的viewcontroller
-    UIWindow *view = [[UIApplication sharedApplication].windows lastObject];
+    UIWindow *view = [self lastWindow];
     [view.rootViewController presentViewController:alert animated:YES completion:^{
     }];
 }
+
+//中间一个按钮3秒后消失
++(UIAlertController *)ZSAlartDelayWithOneBtnTitle:(NSString *)title Message:(NSString *)message BtnStr:(NSString *)Btnstr WithCancelBtn:(BOOL)cancelbtn ClickBlock:(void(^)())btnClickBlock{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *action = [UIAlertAction actionWithTitle:Btnstr style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        btnClickBlock();
+    }];
+    [alert addAction:action];
+    
+    if (cancelbtn) {
+        UIAlertAction *Cancelaction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        }];
+        [alert addAction:Cancelaction];
+    }
+    //获取到窗口最上层的viewcontroller
+    UIWindow *view = [self lastWindow];
+
+    [view.rootViewController presentViewController:alert animated:YES completion:^{
+    }];
+    return alert;
+}
+
++ (UIWindow *)lastWindow
+{
+    NSArray *windows = [UIApplication sharedApplication].windows;
+    for(UIWindow *window in [windows reverseObjectEnumerator]) {
+        
+        if ([window isKindOfClass:[UIWindow class]] &&
+            CGRectEqualToRect(window.bounds, [UIScreen mainScreen].bounds))
+            
+            return window;
+    }
+    
+    return [UIApplication sharedApplication].keyWindow;
+}
+
+
+
 
 +(void)ZSAlartWithOneBtnTitle:(NSString *)title Message:(NSString *)message{
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
@@ -141,7 +180,7 @@ typedef enum{
     [alert addAction:action];
     
     //获取到窗口最上层的viewcontroller
-    UIWindow *view = [[UIApplication sharedApplication].windows lastObject];
+    UIWindow *view = [self lastWindow];
     [view.rootViewController presentViewController:alert animated:YES completion:^{
     }];
 }
@@ -162,7 +201,7 @@ typedef enum{
     }
     
     //获取到窗口最上层的viewcontroller
-    UIWindow *view = [[UIApplication sharedApplication].windows lastObject];
+    UIWindow *view = [self lastWindow];
     [view.rootViewController presentViewController:alert animated:YES completion:^{
     }];
 }
@@ -185,7 +224,7 @@ typedef enum{
     }
     
     //获取到窗口最上层的viewcontroller
-    UIWindow *view = [[UIApplication sharedApplication].windows lastObject];
+    UIWindow *view = [self lastWindow];
     [view.rootViewController presentViewController:alert animated:YES completion:^{
     }];
 }
